@@ -182,11 +182,11 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1794906851726333');
+fbq('init', '1392638372396376');
 fbq('track', 'PageView');
 </script>
 <noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1794906851726333&ev=PageView&noscript=1"
+src="https://www.facebook.com/tr?id=1392638372396376&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 </head>
@@ -243,15 +243,15 @@ src="https://www.facebook.com/tr?id=1794906851726333&ev=PageView&noscript=1"
 
   <section class="offer-band" id="offer">
     <h2>Почни з причини</h2>
-    <p id="offerLine">Замість чергової баночки: 9 уроків від Олі Євміної про те, як знайти саме твою причину.</p>
+    <p id="offerLine">Замість чергової баночки: 7 уроків від Олі Євміної про те, як знайти саме твою причину.</p>
     <div class="offer">
       <span class="pill"><i></i>Ціна й подарунок діють ще <span id="tmr">15:00</span></span>
       <div class="price"><strong id="pNow">$11</strong><s id="pOld">$60</s></div>
       <ul class="incl">
-        <li>Інтенсив «Розкішне волосся»: 9 відеоуроків</li>
+        <li>Інтенсив «Розкішне волосся»: 7 відеоуроків</li>
         <li>Які аналізи здати і як їх читати</li>
-        <li>План харчування, добавок і догляду</li>
-        <li>Подарунок: чек-лист оцінки пошкодження волосся</li>
+        <li>План харчування, рецепти, смузі, суперфуди</li>
+        <li>Як обирати добавки та догляд</li>
         <li>Доступ до матеріалів 60 днів</li>
       </ul>
       <a class="btn buy" href="#" data-place="offer" id="offerBtn">Почати за $11</a>
@@ -271,7 +271,7 @@ src="https://www.facebook.com/tr?id=1794906851726333&ev=PageView&noscript=1"
 
 <script>
 /* === Налаштування === */
-var CHECKOUT_URL = "https://buy.stripe.com/cNi7sMbSwbtMaobcU18EM07"; // посилання Stripe (краще окреме для калькулятора — див. інструкцію)
+var CHECKOUT_URL = "https://buy.stripe.com/cNi7sMbSwbtMaobcU18EM07"; // посилання Stripe; після оплати Stripe повертає на olaevmi.com/superhairevg/thankyou-superpage, там рахується покупка
 var RATE = 45;      // 1 $ ≈ 45 ₴ (курс на 26.10.2026)
 var PRICE = 11;     // ціна інтенсиву в $
 var PRICE_UAH = 480; // ціна інтенсиву в ₴
@@ -346,10 +346,10 @@ function update(){
     var d=Math.max(1,Math.round(priceC/(toCur(monthly)/30)));
     document.getElementById("xDays").textContent=d>=30?"1 місяць":d+" "+plural(d,"день","дні","днів");
     stats.hidden=false; hint.hidden=true;
-    document.getElementById("offerLine").textContent="Ти вже вклала "+money(total)+" у наслідки. Тепер "+fmtCur(priceC)+" у причину: 9 уроків від Олі Євміної.";
+    document.getElementById("offerLine").textContent="Ти вже вклала "+money(total)+" у наслідки. Тепер "+fmtCur(priceC)+" у причину: 7 уроків від Олі Євміної.";
   } else {
     stats.hidden=true; hint.hidden=false;
-    document.getElementById("offerLine").textContent="Замість чергової баночки: 9 уроків від Олі Євміної про те, як знайти саме твою причину.";
+    document.getElementById("offerLine").textContent="Замість чергової баночки: 7 уроків від Олі Євміної про те, як знайти саме твою причину.";
   }
 }
 function daysFor(monthly){ var d=Math.max(1,Math.round(PRICE/(monthly/30))); return d>=30?"місяць":d+" "+plural(d,"день","дні","днів"); }
@@ -372,8 +372,6 @@ document.querySelectorAll(".buy").forEach(function(a){ a.href=CHECKOUT_URL;
   a.addEventListener("click",function(e){ e.preventDefault();
     var value=priceNow(), currency=cur==="usd"?"USD":"UAH";
     try{ if(window.fbq) fbq("track","InitiateCheckout",{value:value,currency:currency,content_name:"Інтенсив «Розкішне волосся»",content_category:"calculator",num_items:1}); }catch(err){}
-    // запам'ятовуємо обрану валюту, щоб сторінка подяки передала Purchase у ній же
-    try{ localStorage.setItem("calc_checkout",JSON.stringify({value:value,currency:currency,t:Date.now()})); }catch(err){}
     var url=CHECKOUT_URL+(CHECKOUT_URL.indexOf("?")<0?"?":"&")+"utm_source=calculator&utm_medium=retarget&client_reference_id=calc_"+currency.toLowerCase();
     setTimeout(function(){ window.location.href=url; },350);
   });
