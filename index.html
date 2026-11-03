@@ -172,12 +172,23 @@ footer{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <style>html,body{margin:0}:root{padding-top:env(safe-area-inset-top,0px)}[hidden]{display:none!important}</style>
-<!-- Meta Pixel -->
+<!-- Meta Pixel Code -->
 <script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','1392638372396376');
-fbq('track','PageView');
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1794906851726333');
+fbq('track', 'PageView');
 </script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1794906851726333&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 <div class="wrap">
@@ -260,7 +271,7 @@ fbq('track','PageView');
 
 <script>
 /* === Налаштування === */
-var CHECKOUT_URL = "https://buy.stripe.com/cNi7sMbSwbtMaobcU18EM07"; // те саме посилання на $11, що й на лендингу
+var CHECKOUT_URL = "https://buy.stripe.com/cNi7sMbSwbtMaobcU18EM07"; // посилання Stripe (краще окреме для калькулятора — див. інструкцію)
 var RATE = 45;      // 1 $ ≈ 45 ₴ (курс на 26.10.2026)
 var PRICE = 11;     // ціна інтенсиву в $
 var PRICE_UAH = 480; // ціна інтенсиву в ₴
@@ -348,8 +359,25 @@ function plural(n,a,b,c){ n=Math.abs(n)%100; var n1=n%10; if(n>10&&n<20) return 
 var sent=false;
 function touched(){ if(sent) return; sent=true; try{ if(window.fbq) fbq("trackCustom","CalculatorUsed"); }catch(e){} }
 
-document.querySelectorAll(".buy").forEach(function(a){ a.href=CHECKOUT_URL; a.target="_top";
-  a.addEventListener("click",function(){ try{ if(window.fbq) fbq("track","InitiateCheckout",{value:PRICE,currency:"USD",content_name:"intensive",placement:"calculator"}); }catch(e){} }); });
+// ViewContent: один раз, коли людина почала гортати вниз (пройшла перший екран)
+(function(){ var sent=false;
+  function vc(){ if(sent) return; if(window.scrollY < Math.min(400, window.innerHeight*0.5)) return; sent=true;
+    try{ if(window.fbq) fbq("track","ViewContent",{content_name:"Калькулятор витрат на волосся",content_category:"calculator",value:priceNow(),currency:cur==="usd"?"USD":"UAH"}); }catch(e){}
+    window.removeEventListener("scroll",vc); }
+  window.addEventListener("scroll",vc,{passive:true});
+})();
+
+// InitiateCheckout: помаранчева кнопка «Почати за …» → Stripe. Цінність і валюта — ті, що обрала людина ($11 або 480 ₴)
+document.querySelectorAll(".buy").forEach(function(a){ a.href=CHECKOUT_URL;
+  a.addEventListener("click",function(e){ e.preventDefault();
+    var value=priceNow(), currency=cur==="usd"?"USD":"UAH";
+    try{ if(window.fbq) fbq("track","InitiateCheckout",{value:value,currency:currency,content_name:"Інтенсив «Розкішне волосся»",content_category:"calculator",num_items:1}); }catch(err){}
+    // запам'ятовуємо обрану валюту, щоб сторінка подяки передала Purchase у ній же
+    try{ localStorage.setItem("calc_checkout",JSON.stringify({value:value,currency:currency,t:Date.now()})); }catch(err){}
+    var url=CHECKOUT_URL+(CHECKOUT_URL.indexOf("?")<0?"?":"&")+"utm_source=calculator&utm_medium=retarget&client_reference_id=calc_"+currency.toLowerCase();
+    setTimeout(function(){ window.location.href=url; },350);
+  });
+});
 
 // нижня панель: після підсумку веде на оплату, ховається біля блоку з ціною
 (function(){ var live=document.getElementById("live"), btn=document.getElementById("liveBtn"), offer=document.getElementById("offer"), verdict=document.getElementById("verdict");
